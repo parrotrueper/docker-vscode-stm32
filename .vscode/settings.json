@@ -1,0 +1,23 @@
+{
+    // workspace settings
+    "editor.minimap.enabled": false,
+    "files.eol": "\n",
+    "telemetry.telemetryLevel": "off",
+    "cSpell.language": "en-GB",
+    "security.workspace.trust.untrustedFiles": "open",
+    "editor.rulers": [
+        80
+    ],
+    "editor.formatOnSave": true,
+    "remote.autoForwardPortsSource": "hybrid",
+    "files.simpleDialog.enable": true,
+    "cortex-debug.liveWatchRefreshRate": 300,
+    "cSpell.diagnosticLevel": "Hint",
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "terminal.integrated.scrollback": 1000,
+    "editor.scrollbar.horizontal": "visible",
+    "diffEditor.ignoreTrimWhitespace": false,
+    "debug.onTaskErrors": "abort",
+    "workbench.editor.empty.hint": "hidden"
+}

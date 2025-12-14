@@ -1,0 +1,73 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        //        { //okish
+        //            "name": "STM32",
+        //            "cwd": "${workspaceRoot}",
+        //            "executable": "${workspaceRoot}/Example/blinky/build/blinky.elf",
+        //            "request": "launch",
+        //            "type": "cortex-debug",
+        //            "device": "STM32H743",
+        //            "servertype": "stutil",
+        //            "preLaunchTask": "Build_Blinky_App",
+        //            "gdbPath": "/usr/bin/gdb",
+        //            "svdFile": "${workspaceRoot}/Example/config/STM32H743.svd",
+        //            "configFiles": [
+        //                "interface/stlink.cfg",
+        //                "target/stm32h7x.cfg"
+        //            ],
+        //            // "runToEntryPoint": "main",
+        //            "showDevDebugOutput": "raw",
+        //            "swoConfig": {
+        //                "enabled": true,
+        //                "swoFrequency": 2000000,
+        //                "cpuFrequency": 170000000,
+        //                "decoders": [
+        //                    {
+        //                        "port": 0,
+        //                        "type": "console"
+        //                    }
+        //                ]
+        //            }
+        //        },
+        {
+            "name": "Remote Debug",
+            "cwd": "${workspaceRoot}/Example/blinky",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "external",
+            // you need to set this to the IP of the host the target is
+            // connected to
+            "gdbTarget": "localhost:4242",
+            "executable": "${workspaceRoot}/Example/blinky/build/blinky.elf",
+            "svdFile": "${workspaceRoot}/Example/config/STM32H743.svd",
+            "runToEntryPoint": "main",
+            "armToolchainPath": "/opt/gcc-arm-none-eabi/bin/",
+            // preLaunchTask you need to launch st-util manually on the host
+            "postDebugTask": "postDebugKill",
+            "postLaunchCommands": [
+                "monitor halt",
+                "monitor reset"
+            ],
+        },
+        {
+            "name": "Debug-USB",
+            "cwd": "${workspaceRoot}/Example/blinky",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "stutil",
+            "device": "STM32H743",
+            "interface": "swd",
+            "serverpath": "/usr/bin/st-util",
+            "executable": "${workspaceRoot}/Example/blinky/build/blinky.elf",
+            "svdFile": "${workspaceRoot}/Example/config/STM32H743.svd",
+            "runToEntryPoint": "main",
+            "armToolchainPath": "/opt/gcc-arm-none-eabi/bin/",
+            "postLaunchCommands": [
+                "monitor halt",
+                "monitor reset"
+            ],
+            "showDevDebugOutput": "raw",
+        }
+    ]
+}

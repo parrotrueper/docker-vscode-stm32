@@ -1,0 +1,54 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Clean",
+            "group": "build",
+            "type": "shell",
+            "command": "rm -rf ./Example/blinky/build",
+            "options": {
+                "statusbar": {
+                    "color": "#ff8b8b",
+                    "label": "$(clear-all) Clean",
+                    "detail": "Clean ALL"
+                }
+            }
+        },
+        {
+            "label": "Build Debug Blinky App",
+            "group": "build",
+            "type": "shell",
+            "command": "cmake -S ./Example/blinky -B ./Example/blinky/build --preset Debug -G Ninja && ninja -k 1 -C ./Example/blinky/build",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "statusbar": {
+                    "color": "#8bdeff",
+                    "label": "$(gear) Debug",
+                    "detail": "Cmake configure Debug"
+                }
+            },
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Clean"
+            ]
+        },
+        {
+            "label": "Build Release Blinky App",
+            "group": "build",
+            "type": "shell",
+            "command": "cmake -S ./Example/blinky -B ./Example/blinky/build --preset Release -G Ninja && ninja -k 1 -C ./Example/blinky/build",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "statusbar": {
+                    "color": "#8bdeff",
+                    "label": "$(gear) Release",
+                    "detail": "Cmake configure Release"
+                }
+            },
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Clean"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,37 @@
+{
+  "name": "ARM development for STM32",
+  // built locally
+  "image": "parrotrueper/stm32vscode:latest",
+  // pulled from docker hub
+  //"image": "parrotrueper/stm32vscode:14.3",
+  // we need this to get access to /dev and /udev for the usb port with stlink
+  "runArgs": [
+    "--privileged",
+    "--device=/dev/:/dev/",
+    "--net=host",
+    "--publish-all"
+  ],
+  //"forwardPorts": [
+  //  3333,
+  //  4444,
+  //  6666,
+  //  50000,
+  //  50001,
+  //  50002,
+  //  50003,
+  //],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "marus25.cortex-debug"
+      ]
+    }
+  },
+  "mounts": [
+    "type=bind,source=/dev,target=/dev",
+    "type=bind,source=/run/udev,target=/run/udev"
+  ],
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "ubuntu"
+}

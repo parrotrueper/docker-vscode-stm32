@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+#shellcheck disable=2312
+# Exit on error
+set -euo pipefail
+
+# shellcheck source=/dev/null
+. ci/functions.sh
+# Error handling
+trap 'printf "\n\nERROR at $0 line $LINENO. Exiting.\n\n"' ERR
+
+# shellcheck source=/dev/null
+. .env
+
+info "Test ARM compiler in path"
+run docker run --rm "${RESULT_IMAGE:?}" printenv PATH | grep "/opt/gcc-arm-none-eabi/bin"
+
+info "Test ARM compiler version"
+run docker run --rm "${RESULT_IMAGE:?}" arm-none-eabi-gcc --version | grep "${ARM_RELEASE_VERSION:?}"
+
+info "Test for cmake"
+run docker run --rm "${RESULT_IMAGE:?}" cmake --version
+
+info "Test for ninja"
+run docker run --rm "${RESULT_IMAGE:?}" ninja --version
+
+info "Test for stlink tools"
+run docker run --rm "${RESULT_IMAGE:?}" st-flash --version
+run docker run --rm "${RESULT_IMAGE:?}" st-info --version
+run docker run --rm "${RESULT_IMAGE:?}" st-trace --version
+run docker run --rm "${RESULT_IMAGE:?}" st-util --version
+
+info "Test for gdb"
+run docker run --rm "${RESULT_IMAGE:?}" gdb --version
+
+info "Test for openocd"
+run docker run --rm "${RESULT_IMAGE:?}" openocd --version
+
+info "Test STM32 build with cmake"
+run rm -rf ./Example/blinky/build
+run mkdir ./Example/blinky/build
+# create the build command for cmake
+docker_cmd="cd ./build &&"
+docker_cmd+=" cmake -DCMAKE_BUILD_TYPE=BLINKY_APP ../ &&"
+docker_cmd+=" cmake --build ."
+
+run docker run --rm --volume "$(pwd)"/Example/blinky:/workspace/ "${RESULT_IMAGE:?}" /usr/bin/bash -c "${docker_cmd}"
+run mv ./Example/blinky/build/blinky.elf ./bliny-by-cmake.elf
+
+info "Test STM32 build with cmake and Ninja"
+run rm -rf ./Example/blinky/build
+run mkdir ./Example/blinky/build
+# create the build command for cmake + Ninja
+# source path
+docker_cmd=" cmake -S ./Example/blinky"
+# build path
+docker_cmd+=" -B ./Example/blinky/build"
+# target to build
+docker_cmd+=" --preset BLINKY_APP"
+# generator
+docker_cmd+=" -G Ninja &&"
+docker_cmd+=" ninja -k 1 -C ./Example/blinky/build"
+
+run docker run --rm --volume "$(pwd)":/workspace/ "${RESULT_IMAGE:?}" /usr/bin/bash -c "${docker_cmd}"
+
+info "Test both build methods produce the same binary"
+run diff ./bliny-by-cmake.elf ./Example/blinky/build/blinky.elf
+
+info "Test that .elf, .hex, .bin files are produced"
+run ls -l ./Example/blinky/build | grep "blinky.elf"
+run ls -l ./Example/blinky/build | grep "blinky.hex"
+run ls -l ./Example/blinky/build | grep "blinky.bin"
