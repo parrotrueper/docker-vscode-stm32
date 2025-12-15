@@ -1,9 +1,9 @@
 {
   "name": "ARM development for STM32",
   // built locally
-  "image": "parrotrueper/stm32vscode:latest",
+  //"image": "parrotrueper/stm32vscode:latest",
   // pulled from docker hub
-  //"image": "parrotrueper/stm32vscode:14.3",
+  "image": "parrotrueper/stm32vscode:14.3",
   // we need this to get access to /dev and /udev for the usb port with stlink
   "runArgs": [
     "--privileged",
